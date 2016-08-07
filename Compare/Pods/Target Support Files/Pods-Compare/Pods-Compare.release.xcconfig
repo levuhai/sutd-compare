@@ -1,0 +1,8 @@
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/EZAudio" "${PODS_ROOT}/Headers/Public/FMDB" "${PODS_ROOT}/Headers/Public/MZAppearance" "${PODS_ROOT}/Headers/Public/MZFormSheetController" "${PODS_ROOT}/Headers/Public/TPCircularBuffer" "${PODS_ROOT}/Headers/Public/TheAmazingAudioEngine"
+LIBRARY_SEARCH_PATHS = $(inherited) "$PODS_CONFIGURATION_BUILD_DIR/EZAudio" "$PODS_CONFIGURATION_BUILD_DIR/FMDB" "$PODS_CONFIGURATION_BUILD_DIR/MZAppearance" "$PODS_CONFIGURATION_BUILD_DIR/MZFormSheetController" "$PODS_CONFIGURATION_BUILD_DIR/TPCircularBuffer" "$PODS_CONFIGURATION_BUILD_DIR/TheAmazingAudioEngine"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/EZAudio" -isystem "${PODS_ROOT}/Headers/Public/FMDB" -isystem "${PODS_ROOT}/Headers/Public/MZAppearance" -isystem "${PODS_ROOT}/Headers/Public/MZFormSheetController" -isystem "${PODS_ROOT}/Headers/Public/TPCircularBuffer" -isystem "${PODS_ROOT}/Headers/Public/TheAmazingAudioEngine"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"EZAudio" -l"FMDB" -l"MZAppearance" -l"MZFormSheetController" -l"TPCircularBuffer" -l"TheAmazingAudioEngine" -l"sqlite3" -framework "AVFoundation" -framework "Accelerate" -framework "AudioToolbox" -framework "GLKit" -framework "QuartzCore"
+PODS_BUILD_DIR = $BUILD_DIR
+PODS_CONFIGURATION_BUILD_DIR = $PODS_BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+PODS_ROOT = ${SRCROOT}/Pods

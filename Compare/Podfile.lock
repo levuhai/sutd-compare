@@ -1,0 +1,36 @@
+PODS:
+  - EZAudio (1.1.5):
+    - EZAudio/Full (= 1.1.5)
+  - EZAudio/Core (1.1.5)
+  - EZAudio/Full (1.1.5):
+    - EZAudio/Core
+    - TPCircularBuffer (= 1.1)
+  - FMDB (2.6.2):
+    - FMDB/standard (= 2.6.2)
+  - FMDB/standard (2.6.2)
+  - MZAppearance (1.1.6)
+  - MZFormSheetController (3.1.3):
+    - MZAppearance
+    - MZFormSheetController/Core (= 3.1.3)
+  - MZFormSheetController/Core (3.1.3):
+    - MZAppearance
+  - TheAmazingAudioEngine (1.5.6)
+  - TPCircularBuffer (1.1)
+
+DEPENDENCIES:
+  - EZAudio
+  - FMDB
+  - MZFormSheetController
+  - TheAmazingAudioEngine
+
+SPEC CHECKSUMS:
+  EZAudio: 3b1cb4b6d7ebca68f0c2478576d75940aad4aa99
+  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  MZAppearance: 0c06d3fa9cc55142f1da14bc8631fbe8fd6e19d5
+  MZFormSheetController: da2df509805d757e04b052915057d8e1a338b050
+  TheAmazingAudioEngine: 0ed8c05486646373a48b22a341d31de42d1af2c3
+  TPCircularBuffer: 4960a919e667280f7f38963d771f45871b64fe62
+
+PODFILE CHECKSUM: 8b68109667ad84e024134318820cec426ffd12ba
+
+COCOAPODS: 1.1.0.beta.1
