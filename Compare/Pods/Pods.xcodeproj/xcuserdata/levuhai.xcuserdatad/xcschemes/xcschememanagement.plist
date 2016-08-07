@@ -4,32 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>EZAudio.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>FMDB.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>MZAppearance.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>MZFormSheetController.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Pods-Compare.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>TPCircularBuffer.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -42,37 +17,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>1DAC2FF166EBB39D93C76C245CCD170C</key>
+		<key>00311FBE85678B01E4BB70944ADE565C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>29F6A95D1D39A30B633F5A82EB393C64</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>32432EB8D0520D5A0974BD24182FC812</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>4547FD42E303C73D12CCC45748CC491D</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>5A6DB7A94477A4B25220873FB3B139E4</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>9B2B758E5A2FBC4951EB61B6FB6CE421</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>9F12FB4A63E20F601CFB2E64A65B57C1</key>
+		<key>7F4F151F3E6531433271BBB09133BE1A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
