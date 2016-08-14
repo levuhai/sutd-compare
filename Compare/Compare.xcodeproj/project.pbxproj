@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		A525849E655DFCA3E47E89A7 /* libPods-Compare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 669A940F0D6882C6D65D8164 /* libPods-Compare.a */; };
+		A7423BBC1D60239400631D84 /* MatrixController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A7423BBB1D60239400631D84 /* MatrixController.mm */; };
+		A7423BBF1D6024D400631D84 /* MatrixOuput.mm in Sources */ = {isa = PBXBuildFile; fileRef = A7423BBE1D6024D400631D84 /* MatrixOuput.mm */; };
 		A76C6E7E1D556E18001B4F0B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A76C6E7D1D556E18001B4F0B /* main.m */; };
 		A76C6E811D556E18001B4F0B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A76C6E801D556E18001B4F0B /* AppDelegate.m */; };
 		A76C6E841D556E18001B4F0B /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A76C6E831D556E18001B4F0B /* ViewController.mm */; };
@@ -51,6 +53,10 @@
 		45E47F8DFD50A6B5E1A69A02 /* Pods-Compare.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Compare.release.xcconfig"; path = "Pods/Target Support Files/Pods-Compare/Pods-Compare.release.xcconfig"; sourceTree = "<group>"; };
 		669A940F0D6882C6D65D8164 /* libPods-Compare.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Compare.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7953009C553E3BFAC90C6297 /* Pods-Compare.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Compare.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Compare/Pods-Compare.debug.xcconfig"; sourceTree = "<group>"; };
+		A7423BBA1D60239400631D84 /* MatrixController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatrixController.h; sourceTree = "<group>"; };
+		A7423BBB1D60239400631D84 /* MatrixController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MatrixController.mm; sourceTree = "<group>"; };
+		A7423BBD1D6024D400631D84 /* MatrixOuput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatrixOuput.h; sourceTree = "<group>"; };
+		A7423BBE1D6024D400631D84 /* MatrixOuput.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MatrixOuput.mm; sourceTree = "<group>"; };
 		A76C6E791D556E18001B4F0B /* Compare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Compare.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A76C6E7D1D556E18001B4F0B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A76C6E7F1D556E18001B4F0B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -200,6 +206,10 @@
 		A76C6E941D5570C0001B4F0B /* View */ = {
 			isa = PBXGroup;
 			children = (
+				A7423BBD1D6024D400631D84 /* MatrixOuput.h */,
+				A7423BBE1D6024D400631D84 /* MatrixOuput.mm */,
+				A7423BBA1D60239400631D84 /* MatrixController.h */,
+				A7423BBB1D60239400631D84 /* MatrixController.mm */,
 				A76C82011D55F4AA001B4F0B /* SUTDMFCCHelperFunctions.cpp */,
 				A76C82021D55F4AA001B4F0B /* SUTDMFCCHelperFunctions.hpp */,
 				A76C6E821D556E18001B4F0B /* ViewController.h */,
@@ -432,6 +442,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7423BBC1D60239400631D84 /* MatrixController.mm in Sources */,
 				A76C6EEE1D55DA58001B4F0B /* WordMatch.cpp in Sources */,
 				A76C6EEB1D55DA58001B4F0B /* MFCCUtils.cpp in Sources */,
 				A76C6EE91D55DA58001B4F0B /* MFCCProcessor.cpp in Sources */,
@@ -439,6 +450,7 @@
 				A76C6E841D556E18001B4F0B /* ViewController.mm in Sources */,
 				A76C6E811D556E18001B4F0B /* AppDelegate.m in Sources */,
 				A76C6E7E1D556E18001B4F0B /* main.m in Sources */,
+				A7423BBF1D6024D400631D84 /* MatrixOuput.mm in Sources */,
 				A76C6E9A1D55755C001B4F0B /* DataManager.mm in Sources */,
 				A76C6EDE1D55DA58001B4F0B /* CADebugPrintf.cpp in Sources */,
 				A76C6EA71D557F4E001B4F0B /* NSDictionary+ES.m in Sources */,

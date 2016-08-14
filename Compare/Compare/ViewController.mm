@@ -14,6 +14,7 @@
 #import "TheAmazingAudioEngine.h"
 #import "AERecorder.h"
 #import "NSFileManager+SUTD.h"
+#import "MatrixController.h"
 
 #include <algorithm>
 #include <stdexcept>
@@ -49,6 +50,8 @@ const float kDefaultTrimEndThreshold = -200.0f;
     
     WMAudioFilePreProcessInfo _userVoiceFileInfo;
     WMAudioFilePreProcessInfo _databaseVoiceFileInfo;
+    
+    MatrixController* _matrixVC;
 
 }
 
@@ -72,6 +75,15 @@ AudioStreamBasicDescription AEAudioStreamBasicDescriptionMono = {
     [self _setupAudioController];
     
     _btnRecord.layer.borderColor = [UIColor whiteColor].CGColor;
+    
+    // Storyboard
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    // Add Matrix VC
+    _matrixVC = [storyboard instantiateViewControllerWithIdentifier:@"MatrixController"];
+    _matrixVC.view.frame = _vContainer.bounds ;
+    [self.vContainer addSubview:_matrixVC.view];
+    [self addChildViewController:_matrixVC];
+    [_matrixVC didMoveToParentViewController:self];
 }
 
 // Setup AEAudioController
@@ -134,7 +146,9 @@ AudioStreamBasicDescription AEAudioStreamBasicDescriptionMono = {
     NSMutableArray* arr = [[DataManager shared] files];
     float score = 0;
     int index = 0;
-
+//    recordPath = [[DataManager shared] files][0]; // 0.1
+//    recordPath = [[DataManager shared] files][1]; // 0.032
+//    recordPath = [[DataManager shared] files][2]; // 0.052
     // User feature
     NSURL *userVoiceURL = [NSURL URLWithString:[recordPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     FeatureTypeDTW::Features userVoiceFeatures = [self _getPreProcessInfo:userVoiceURL
@@ -152,26 +166,137 @@ AudioStreamBasicDescription AEAudioStreamBasicDescriptionMono = {
             index = i;
         }
     }
+    
     NSLog(@"%.3f %@ %@",score,recordPath.lastPathComponent, [arr[index] lastPathComponent]);
-    [self _setStatus:@"Finished"];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (score < 0.01) {
-            _lbResult.text = @"No match";
-        } else {
+    if ((roundf(score*1000.0f)/1000.0f) >= 0.000) {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self _draw:userVoiceFeatures databaseVoice:arr[index]];
+        });
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
             _lbResult.text = [arr[index] lastPathComponent];
-        }
-    });
+            
+        });
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _lbResult.text = @"File not match";
+            
+        });
+    }
+    [self _setStatus:@"Finished"];
 }
 
 - (float)_scoring:(FeatureTypeDTW::Features)userVoiceFeatures databaseVoice:(NSString*)databaseVoicePath {
+    if (userVoiceFeatures.size() == 0) {
+        return -1;
+    }
+    NSURL *databaseVoiceURL = [NSURL URLWithString:[databaseVoicePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    FeatureTypeDTW::Features databaseVoiceFeatures = [self _getPreProcessInfo:databaseVoiceURL
+                                                               beginThreshold:kDefaultTrimBeginThreshold
+                                                                 endThreshold:kDefaultTrimEndThreshold
+                                                                         info:&_databaseVoiceFileInfo];
+    
+    
+    
+    // where does the target phoneme start and end in the database word?
+    size_t targetPhonemeStartInDB = 0;
+    size_t targetPhonemeEndInDB = databaseVoiceFeatures.size();
+    
+    
+    
+    // Clamp the target phoneme location within the valid range of indices.
+    // Note that the size_t type is not signed so we don't need to clamp at
+    // zero.
+    if(targetPhonemeStartInDB >= databaseVoiceFeatures.size())
+        targetPhonemeStartInDB = databaseVoiceFeatures.size()-1;
+    if(targetPhonemeEndInDB >= databaseVoiceFeatures.size())
+        targetPhonemeEndInDB = databaseVoiceFeatures.size()-1;
+    
+    
+    
+    // if the user voice recording is shorter than the target phoneme, we  pad it with copies of its last element to get a square match region.
+    size_t targetPhonemeLength = 1 + targetPhonemeEndInDB - targetPhonemeStartInDB;
+    if(userVoiceFeatures.size() < targetPhonemeLength) {
+        for(size_t i=0; i<userVoiceFeatures[0].size(); i++) {
+            userVoiceFeatures[userVoiceFeatures.size()-1][i] = MAXFLOAT;
+        }
+        userVoiceFeatures.resize(targetPhonemeLength,userVoiceFeatures.back());
+    }
+    
+    
+    /*
+     * ensure that the similarity matrix arrays have enough space to store
+     * the matrix
+     */
+    if(similarityMatrix.size() != userVoiceFeatures.size())
+        similarityMatrix.resize(userVoiceFeatures.size());
+    for(size_t i=0; i<userVoiceFeatures.size(); i++)
+        if(similarityMatrix[i].size() != databaseVoiceFeatures.size())
+            similarityMatrix[i].resize(databaseVoiceFeatures.size());
+    
+    
+    // calculate the matrix of similarity
+    genSimilarityMatrix(userVoiceFeatures, databaseVoiceFeatures, similarityMatrix);
+    
+    
+    // normalize the output
+    normaliseMatrix(similarityMatrix);
+    
+    // TODO: change this value
+    /*
+     * Phonemes that depend on the vowel sounds before and after do
+     * better with split-region scoring
+     */
+    bool splitRegionScoring = NO;// for S this is false, for K it is true.
+    
+    
+    // find the vertical location of a square match region, centred on the
+    // target phoneme and the rows in the user voice that best match it.
+    size_t matchRegionStartInUV, matchRegionEndInUV;
+    bestMatchLocation(similarityMatrix, targetPhonemeStartInDB, targetPhonemeEndInDB, matchRegionStartInUV, matchRegionEndInUV, splitRegionScoring);
+    
+    
+    
+    // make sure nearLineMatrix has the right size
+    if(nearLineMatrix.size() != similarityMatrix.size())
+        nearLineMatrix.resize(similarityMatrix.size());
+    for(size_t i=0; i<nearLineMatrix.size(); i++)
+        if(nearLineMatrix[i].size() != similarityMatrix[i].size())
+            nearLineMatrix[i].resize(similarityMatrix[i].size());
+    
+    
+    /*
+     * highlight the match region in green on the matrix plot
+     */
+    for (int y=0; y < similarityMatrix.size(); y++) {
+        for (int x=0; x<similarityMatrix[0].size(); x++) {
+            if (y < matchRegionStartInUV || y > matchRegionEndInUV
+                || x < targetPhonemeStartInDB || x > targetPhonemeEndInDB) {
+                nearLineMatrix[y][x] = 0;
+            } else {
+                nearLineMatrix[y][x] = similarityMatrix[y][x];
+            }
+        }
+    }
+    
+    float score;
+    if(splitRegionScoring)
+        score = matchScoreSplitRegion(similarityMatrix,
+                                      targetPhonemeStartInDB, targetPhonemeEndInDB,
+                                      matchRegionStartInUV, matchRegionEndInUV);
+    else
+        score = matchScoreSingleRegion(similarityMatrix,
+                                       targetPhonemeStartInDB, targetPhonemeEndInDB,
+                                       matchRegionStartInUV, matchRegionEndInUV, true);
+    
+    return score;
+}
+
+- (float)_draw:(FeatureTypeDTW::Features)userVoiceFeatures databaseVoice:(NSString*)databaseVoicePath {
     /*
      * Read audio files from file paths
      */
-//    NSURL *userVoiceURL = [NSURL URLWithString:[userVoicePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-//    FeatureTypeDTW::Features userVoiceFeatures = [self _getPreProcessInfo:userVoiceURL
-//                                                           beginThreshold:kDefaultTrimBeginThreshold
-//                                                             endThreshold:kDefaultTrimEndThreshold
-//                                                                     info:&_userVoiceFileInfo];
     
     NSURL *databaseVoiceURL = [NSURL URLWithString:[databaseVoicePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     FeatureTypeDTW::Features databaseVoiceFeatures = [self _getPreProcessInfo:databaseVoiceURL
@@ -267,6 +392,23 @@ AudioStreamBasicDescription AEAudioStreamBasicDescriptionMono = {
         score = matchScoreSingleRegion(similarityMatrix,
                                        targetPhonemeStartInDB, targetPhonemeEndInDB,
                                        matchRegionStartInUV, matchRegionEndInUV, true);
+    
+    // Page 3
+    _matrixVC.upperView.graphColor = [UIColor greenColor];
+    _matrixVC.upperView.legend = CGRectMake(targetPhonemeStartInDB, targetPhonemeEndInDB, matchRegionStartInUV, matchRegionEndInUV);
+    [_matrixVC.upperView inputNormalizedDataW:(int)nearLineMatrix[0].size()
+                                          matrixH:(int)nearLineMatrix.size()
+                                             data:nearLineMatrix
+                                             rect:self.view.bounds
+                                           maxVal:0.5];
+    
+    [_matrixVC.lowerView inputNormalizedDataW:(int)similarityMatrix[0].size()
+                                      matrixH:(int)similarityMatrix.size()
+                                         data:similarityMatrix
+                                         rect:self.view.bounds
+                                       maxVal:0.5];
+    [_matrixVC generateImage];
+    
     return score;
 }
 

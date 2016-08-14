@@ -13,6 +13,7 @@
 @property (nonatomic, weak) IBOutlet UILabel *lbStatus;
 @property (nonatomic, weak) IBOutlet UILabel *lbResult;
 @property (nonatomic, weak) IBOutlet UIButton *btnRecord;
+@property (nonatomic, weak) IBOutlet UIView *vContainer;
 
 @end
 
